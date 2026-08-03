@@ -1,7 +1,6 @@
 const CACHE_NAME = 'krishi-v1';
 const ASSETS = [
   '/',
-  '/favicon.ico',
   '/_next/static/',
 ];
 
@@ -32,12 +31,26 @@ self.addEventListener('fetch', (event) => {
   // Only handle GET requests
   if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then((cached) => {
+    (async () => {
+      const cached = await caches.match(event.request);
       if (cached) return cached;
-      return fetch(event.request).catch(() => {
-        // fallback to cache index for navigation requests
-        if (event.request.mode === 'navigate') return caches.match('/');
-      });
-    })
+
+      try {
+        return await fetch(event.request);
+      } catch {
+        // For page navigations, serve cached shell when available.
+        if (event.request.mode === 'navigate') {
+          const fallback = await caches.match('/');
+          if (fallback) return fallback;
+        }
+
+        // Always return a valid Response to avoid FetchEvent runtime errors.
+        return new Response('Offline', {
+          status: 503,
+          statusText: 'Service Unavailable',
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        });
+      }
+    })()
   );
 });
