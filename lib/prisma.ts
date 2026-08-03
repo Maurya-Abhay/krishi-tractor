@@ -1,4 +1,32 @@
 import { PrismaClient } from "@prisma/client";
+import { parse } from "url";
+
+function getDatabaseUrl() {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl) {
+    return databaseUrl;
+  }
+
+  if (databaseUrl.includes("sslmode=")) {
+    return databaseUrl;
+  }
+
+  const parsed = parse(databaseUrl, true);
+  const host = parsed.host ?? "";
+  const isSupabase = host.includes("supabase.co");
+
+  if (!isSupabase) {
+    return databaseUrl;
+  }
+
+  const separator = databaseUrl.includes("?") ? "&" : "?";
+  return `${databaseUrl}${separator}sslmode=require`;
+}
+
+const normalizedDatabaseUrl = getDatabaseUrl();
+if (normalizedDatabaseUrl) {
+  process.env.DATABASE_URL = normalizedDatabaseUrl;
+}
 
 // Prevents creating a new PrismaClient on every hot-reload in development,
 // which would otherwise exhaust the database connection pool.
