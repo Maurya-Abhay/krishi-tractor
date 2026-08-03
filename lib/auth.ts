@@ -20,13 +20,14 @@ export const authOptions: NextAuthOptions = {
         if (!parsed.success) return null;
 
         const { phone, password } = parsed.data;
+        const normalizedPhone = phone.replace(/\D/g, "");
 
-        const rateLimit = await checkRateLimit(`login:${phone}`);
+        const rateLimit = await checkRateLimit(`login:${normalizedPhone}`);
         if (!rateLimit.success) {
           throw new Error("Too many login attempts. Please try again later.");
         }
 
-        const user = await prisma.user.findUnique({ where: { phone } });
+        const user = await prisma.user.findUnique({ where: { phone: normalizedPhone } });
         if (!user) return null;
 
         const isValid = await bcrypt.compare(password, user.passwordHash);
