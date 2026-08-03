@@ -13,10 +13,7 @@ export class ApiError extends Error {
 
 type Session = { user: { id: string; name: string; phone: string } };
 
-type Handler = (
-  req: NextRequest,
-  ctx: { session: Session; params: Record<string, string> }
-) => Promise<NextResponse>;
+type Handler = (req: NextRequest, ctx: any) => Promise<NextResponse>;
 
 /**
  * Wraps a Route Handler with: session verification, rate limiting,
@@ -26,10 +23,7 @@ type Handler = (
  * routes just implement their Prisma query.
  */
 export function withApiHandler(handler: Handler) {
-  return async (
-    req: NextRequest,
-    context: { params: Promise<Record<string, string>> | Record<string, string> }
-  ): Promise<NextResponse> => {
+  return async (req: NextRequest, context: any): Promise<NextResponse> => {
     try {
       const session = await getServerSession(authOptions);
       if (!session?.user) {
@@ -44,7 +38,7 @@ export function withApiHandler(handler: Handler) {
         );
       }
 
-      const params = await context.params;
+      const params = await context?.params;
       return await handler(req, { session: session as Session, params });
     } catch (error) {
       return handleApiError(error);

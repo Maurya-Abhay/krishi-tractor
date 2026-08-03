@@ -81,15 +81,4 @@ export async function getDashboardStats() {
       recentPayments: [],
     };
   }
-
-  return {
-    totalCustomers,
-    todayWorkCount: todayWorkAgg._count,
-    todayWorkAmount: round2(Number(todayWorkAgg._sum.total ?? 0)),
-    todayCollection: round2(Number(todayPaymentAgg._sum.amount ?? 0)),
-    pendingAmount: round2(totalWork - totalPaid),
-    receivedAmount: totalPaid,
-    recentWork,
-    recentPayments,
-  };
 }

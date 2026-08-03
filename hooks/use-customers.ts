@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { keepPreviousData, useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, type UseQueryResult } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { CustomerInput } from "@/lib/validations/customer";
 
@@ -25,32 +25,49 @@ export function useDebouncedValue<T>(value: T, delayMs = 300): T {
   return debounced;
 }
 
-export function useCustomers(search?: string, initialData?: { customers: any[] }) {
-  return useQuery({
-    queryKey: ["customers", search ?? ""],
-    queryFn: () =>
-      fetchJson<{ customers: any[] }>(
-        `/api/customers${search ? `?search=${encodeURIComponent(search)}` : ""}`
-      ),
-    // Keeps the previous list visible while the new search resolves,
-    // instead of flashing a loading state on every keystroke.
-    keepPreviousData: true,
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
-    initialData: search ? undefined : initialData,
-  });
+export function useCustomers(
+  search?: string,
+  initialData?: { customers: any[] }
+): UseQueryResult<{ customers: any[] }, Error> {
+  const q = useQuery<{ customers: any[] }, Error, { customers: any[] }>(
+    {
+      queryKey: ["customers", search ?? ""],
+      queryFn: () =>
+        fetchJson<{ customers: any[] }>(
+          `/api/customers${search ? `?search=${encodeURIComponent(search)}` : ""}`
+        ),
+      // Keeps the previous list visible while the new search resolves,
+      // instead of flashing a loading state on every keystroke.
+      staleTime: 5 * 60 * 1000,
+      cacheTime: 10 * 60 * 1000,
+      initialData: search ? undefined : initialData,
+    } as any
+  );
+
+  return q as UseQueryResult<{ customers: any[] }, Error>;
 }
 
-export function useCustomer(id: string) {
-  return useQuery({
-    queryKey: ["customer", id],
-    queryFn: () => fetchJson<{ customer: any; summary: any; workEntries: any[]; payments: any[] }>(
-      `/api/customers/${id}`
-    ),
-    enabled: !!id,
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
-  });
+export function useCustomer(
+  id: string
+): UseQueryResult<{ customer: any; summary: any; workEntries: any[]; payments: any[] }, Error> {
+  const qc = useQuery<
+    { customer: any; summary: any; workEntries: any[]; payments: any[] },
+    Error,
+    { customer: any; summary: any; workEntries: any[]; payments: any[] }
+  >(
+    {
+      queryKey: ["customer", id],
+      queryFn: () =>
+        fetchJson<{ customer: any; summary: any; workEntries: any[]; payments: any[] }>(
+          `/api/customers/${id}`
+        ),
+      enabled: !!id,
+      staleTime: 5 * 60 * 1000,
+      cacheTime: 10 * 60 * 1000,
+    } as any
+  );
+
+  return qc as UseQueryResult<{ customer: any; summary: any; workEntries: any[]; payments: any[] }, Error>;
 }
 
 export function useCreateCustomer() {

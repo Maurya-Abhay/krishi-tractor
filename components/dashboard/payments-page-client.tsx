@@ -52,7 +52,7 @@ export function PaymentsPageClient({ customers, todayCollection, pendingAmount }
           <div className="grid gap-4 sm:grid-cols-2">
             <Card className="rounded-none shadow-2xl bg-card dark:bg-card overflow-hidden">
               <CardHeader>
-                <CardTitle>Today's collection</CardTitle>
+                <CardTitle>Today&apos;s collection</CardTitle>
               </CardHeader>
               <CardContent className="grid gap-3 sm:grid-cols-2 p-2">
                 <div className="rounded-none border border-border bg-card/60 dark:bg-card/50 p-2">
