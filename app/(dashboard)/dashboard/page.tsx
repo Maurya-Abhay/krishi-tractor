@@ -4,8 +4,7 @@ import { formatCurrency } from "@/lib/calculations";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
 
-export const dynamic = "force-static";
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
   const stats = await getDashboardStats();

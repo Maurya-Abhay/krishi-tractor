@@ -2,8 +2,7 @@ import { getDashboardStats } from "@/lib/data/dashboard";
 import { listCustomers } from "@/lib/data/customers";
 import { PaymentsPageClient } from "@/components/dashboard/payments-page-client";
 
-export const dynamic = "force-static";
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function PaymentsPage() {
   const [stats, customers] = await Promise.all([getDashboardStats(), listCustomers()]);

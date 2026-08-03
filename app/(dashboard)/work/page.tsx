@@ -2,8 +2,7 @@ import { getDashboardStats } from "@/lib/data/dashboard";
 import { listCustomers } from "@/lib/data/customers";
 import { WorkEntriesPageClient } from "@/components/dashboard/work-entries-page-client";
 
-export const dynamic = "force-static";
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function WorkPage() {
   const [stats, customers] = await Promise.all([getDashboardStats(), listCustomers()]);

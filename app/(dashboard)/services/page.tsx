@@ -5,8 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/calculations";
 import { ServiceRateDialog } from "@/components/services/service-rate-dialog";
 
-export const dynamic = "force-static";
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function ServicesPage() {
   const services = await listServices();

@@ -1,8 +1,7 @@
 import { listCustomers } from "@/lib/data/customers";
 import { ReportsPageClient } from "@/components/dashboard/reports-page-client";
 
-export const dynamic = "force-static";
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function ReportsPage() {
   const customers = await listCustomers();

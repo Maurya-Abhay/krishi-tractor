@@ -2,8 +2,7 @@ import { AddCustomerDialog } from "@/components/customers/add-customer-dialog";
 import { CustomerTable } from "@/components/customers/customer-table";
 import { listCustomers } from "@/lib/data/customers";
 
-export const dynamic = "force-static";
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function CustomersPage() {
   const initialCustomers = await listCustomers();
