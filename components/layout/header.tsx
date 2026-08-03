@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { LogOut, Tractor, User } from "lucide-react";
@@ -79,9 +80,12 @@ export function Header() {
           {/* User Avatar Badge (Desktop) */}
           <div className="hidden items-center gap-2 rounded-md p-0.5 pr-2 sm:flex">
             {userImage ? (
-              <img
+              <Image
                 src={userImage}
                 alt={name}
+                width={24}
+                height={24}
+                unoptimized
                 className="h-6 w-6 rounded-full object-cover"
               />
             ) : (

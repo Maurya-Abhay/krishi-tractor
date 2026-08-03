@@ -27,7 +27,7 @@ export function WorkEntryForm({
   isPending?: boolean;
 }) {
   const { data: servicesData } = useServices();
-  const services: ServiceOption[] = servicesData?.services ?? [];
+  const services = useMemo<ServiceOption[]>(() => servicesData?.services ?? [], [servicesData?.services]);
 
   const {
     register,
