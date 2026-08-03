@@ -1,0 +1,104 @@
+// Krishi Tractor Management System — Database Schema
+// Design principle: WorkEntry is an immutable historical record.
+// It snapshots `rate` and `total` at creation time so that changing
+// Service.defaultRate NEVER alters past records.
+// Customer balance is intentionally NOT stored — it is always derived
+// as SUM(WorkEntry.total) - SUM(Payment.amount) to avoid drift/races.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ServiceUnit {
+  KATHA // Sukha Jutai, Lewahi — Total = katha * rate
+  HOUR // Harvest Machine — Total = decimalHours * rate
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workEntries WorkEntry[]
+  payments    Payment[]
+
+  @@index([name])
+  @@map("customers")
+}
+
+model Service {
+  id          String      @id @default(cuid())
+  name        String      @unique // "Sukha Jutai" | "Lewahi" | "Harvest Machine"
+  unit        ServiceUnit
+  defaultRate Decimal     @db.Decimal(10, 2)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  workEntries WorkEntry[]
+
+  @@map("services")
+}
+
+model WorkEntry {
+  id         String   @id @default(cuid())
+  customerId String
+  serviceId  String
+  date       DateTime @default(now())
+
+  // Snapshot fields — set once at creation, define the historical record.
+  rate  Decimal @db.Decimal(10, 2) // copied from Service.defaultRate at creation time
+  total Decimal @db.Decimal(10, 2) // computed and stored, never recalculated from live rate
+
+  // Quantity fields — only one pair is relevant depending on service.unit,
+  // enforced at the application layer (Zod), not the DB, to keep the schema simple.
+  katha       Decimal? @db.Decimal(10, 2) // for KATHA-unit services
+  hours       Int? // for HOUR-unit services (whole hour part)
+  minutes     Int? // for HOUR-unit services (0-59)
+  decimalHour Decimal? @db.Decimal(10, 2) // hours + minutes/60, stored for reporting
+
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  service  Service  @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+
+  @@index([customerId, date])
+  @@index([date])
+  @@map("work_entries")
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  customerId String
+  amount     Decimal  @db.Decimal(10, 2)
+  date       DateTime @default(now())
+  note       String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId, date])
+  @@index([date])
+  @@map("payments")
+}

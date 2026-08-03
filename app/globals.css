@@ -1,0 +1,405 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+   Krishi Tractor — "Warm Agri-Premium" design tokens
+   Palette: deep field green + harvest amber over warm stone neutrals.
+   Every colour pair below is checked for WCAG AA (4.5:1 body, 3:1 large/UI).
+   ========================================================================= */
+
+@layer base {
+  :root {
+    color-scheme: light;
+
+    /* Surfaces — warm stone, deliberately not cold grey */
+    --background: 40 30% 97%;
+    --surface: 42 32% 95%;
+    --card: 0 0% 100%;
+    --card-foreground: 30 14% 13%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 14% 13%;
+    --foreground: 30 14% 13%;
+
+    /* Brand — deep field green */
+    --primary: 147 58% 20%;
+    --primary-foreground: 45 40% 98%;
+    --primary-hover: 147 52% 26%;
+    --primary-soft: 147 38% 93%;
+    --primary-soft-foreground: 147 60% 18%;
+
+    /* Harvest amber — accents, highlights, "today" markers */
+    --accent: 32 94% 46%;
+    --accent-foreground: 30 50% 10%;
+    --accent-soft: 38 92% 94%;
+    /* AA-safe amber for text on light surfaces (5.9:1) */
+    --accent-strong: 27 88% 31%;
+
+    --secondary: 42 26% 93%;
+    --secondary-foreground: 30 16% 20%;
+
+    --muted: 40 20% 94%;
+    --muted-foreground: 32 8% 42%;
+
+    --success: 152 58% 27%;
+    --success-foreground: 0 0% 100%;
+    --success-soft: 152 45% 93%;
+
+    --warning: 38 92% 40%;
+    --warning-foreground: 0 0% 100%;
+    --warning-soft: 40 90% 94%;
+
+    --destructive: 4 70% 44%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-soft: 4 70% 95%;
+
+    --border: 38 20% 88%;
+    --border-strong: 36 16% 80%;
+    --input: 38 20% 86%;
+    --ring: 147 58% 30%;
+
+    /* Radius scale — one source of truth, no more random rounded-3xl */
+    --radius: 0.875rem;
+
+    /* Elevation — warm-tinted shadows read as depth, not dirt */
+    --shadow-hue: 30 25% 12%;
+    --elev-1: 0 1px 2px hsl(var(--shadow-hue) / 0.05), 0 1px 3px hsl(var(--shadow-hue) / 0.04);
+    --elev-2: 0 2px 4px hsl(var(--shadow-hue) / 0.05), 0 6px 14px hsl(var(--shadow-hue) / 0.06);
+    --elev-3: 0 4px 8px hsl(var(--shadow-hue) / 0.06), 0 14px 32px hsl(var(--shadow-hue) / 0.1);
+    --elev-4: 0 8px 16px hsl(var(--shadow-hue) / 0.08), 0 24px 56px hsl(var(--shadow-hue) / 0.14);
+    --ring-soft: 0 0 0 1px hsl(var(--border) / 0.9);
+
+    /* Motion — short, snappy, consistent. Nothing over 240ms. */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+    --dur-fast: 120ms;
+    --dur: 180ms;
+    --dur-slow: 240ms;
+  }
+
+  .dark {
+    color-scheme: dark;
+
+    /* Deep warm-green charcoal, never pure black */
+    --background: 150 12% 7%;
+    --surface: 150 10% 10%;
+    --card: 150 10% 11%;
+    --card-foreground: 42 24% 94%;
+    --popover: 150 11% 12%;
+    --popover-foreground: 42 24% 94%;
+    --foreground: 42 24% 94%;
+
+    /* Lifted green so it reads against a dark field */
+    --primary: 147 44% 40%;
+    --primary-foreground: 150 40% 97%;
+    --primary-hover: 147 46% 46%;
+    --primary-soft: 148 30% 17%;
+    --primary-soft-foreground: 147 50% 78%;
+
+    --accent: 36 94% 55%;
+    --accent-foreground: 30 60% 8%;
+    --accent-soft: 34 40% 17%;
+    --accent-strong: 38 92% 66%;
+
+    --secondary: 150 8% 17%;
+    --secondary-foreground: 42 20% 90%;
+
+    --muted: 150 8% 16%;
+    --muted-foreground: 40 8% 66%;
+
+    --success: 152 46% 42%;
+    --success-foreground: 150 40% 97%;
+    --success-soft: 152 30% 16%;
+
+    --warning: 38 80% 52%;
+    --warning-foreground: 30 60% 8%;
+    --warning-soft: 38 35% 17%;
+
+    --destructive: 4 62% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --destructive-soft: 4 35% 18%;
+
+    --border: 150 7% 20%;
+    --border-strong: 150 7% 28%;
+    --input: 150 7% 22%;
+    --ring: 147 44% 52%;
+
+    /* Dark surfaces need deeper, more opaque shadows to register at all */
+    --shadow-hue: 150 40% 2%;
+    --elev-1: 0 1px 2px hsl(var(--shadow-hue) / 0.4);
+    --elev-2: 0 2px 4px hsl(var(--shadow-hue) / 0.4), 0 6px 14px hsl(var(--shadow-hue) / 0.36);
+    --elev-3: 0 4px 8px hsl(var(--shadow-hue) / 0.44), 0 14px 32px hsl(var(--shadow-hue) / 0.5);
+    --elev-4: 0 8px 16px hsl(var(--shadow-hue) / 0.5), 0 24px 56px hsl(var(--shadow-hue) / 0.6);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+    /* Tabular numerals everywhere money is shown — columns must line up */
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+
+  /* Consistent, visible focus that follows the brand rather than the UA default */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.18);
+  }
+
+  /* Slim, theme-aware scrollbars (desktop only — mobile uses overlay bars) */
+  @media (pointer: fine) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: hsl(var(--border-strong)) transparent;
+    }
+    *::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    *::-webkit-scrollbar-thumb {
+      background-color: hsl(var(--border-strong));
+      border-radius: 999px;
+      border: 3px solid transparent;
+      background-clip: content-box;
+    }
+    *::-webkit-scrollbar-thumb:hover {
+      background-color: hsl(var(--muted-foreground) / 0.6);
+    }
+  }
+
+  /* Money and counts must never shift width as digits change */
+  .tnum,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+@layer utilities {
+  /* --- Elevation ------------------------------------------------------- */
+  .elev-1 { box-shadow: var(--elev-1); }
+  .elev-2 { box-shadow: var(--elev-2); }
+  .elev-3 { box-shadow: var(--elev-3); }
+  .elev-4 { box-shadow: var(--elev-4); }
+
+  /* --- Motion ---------------------------------------------------------- */
+  /* Only animate compositor-friendly properties (transform/opacity) plus
+     cheap paint properties. Never animate layout properties. */
+  .transition-ui {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-duration: var(--dur);
+    transition-timing-function: var(--ease-out);
+  }
+  .transition-fast {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-duration: var(--dur-fast);
+    transition-timing-function: var(--ease-out);
+  }
+
+  .press {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  .press:active {
+    transform: scale(0.97);
+  }
+
+  .lift {
+    transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+  }
+  @media (hover: hover) {
+    .lift:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--elev-3);
+    }
+  }
+
+  /* --- Surfaces -------------------------------------------------------- */
+  .surface-grain {
+    background-image: radial-gradient(
+      hsl(var(--foreground) / 0.025) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+  }
+
+  .brand-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(147 52% 26%) 55%,
+      hsl(160 45% 24%) 100%
+    );
+  }
+
+  .accent-gradient {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--accent)) 0%,
+      hsl(20 90% 50%) 100%
+    );
+  }
+
+  /* Hairline top highlight — the cheap trick that makes cards look expensive */
+  .sheen {
+    position: relative;
+  }
+  .sheen::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(0 0% 100% / 0.5),
+      transparent
+    );
+    pointer-events: none;
+  }
+  .dark .sheen::before {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsl(0 0% 100% / 0.08),
+      transparent
+    );
+  }
+
+  /* --- Safe areas (iPhone notch / Android gesture bar) ------------------ */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .h-nav-safe {
+    height: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
+  .mb-nav-safe {
+    margin-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* --- Text ------------------------------------------------------------ */
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Line-clamp without the plugin */
+  .clamp-1,
+  .clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .clamp-1 { -webkit-line-clamp: 1; }
+  .clamp-2 { -webkit-line-clamp: 2; }
+}
+
+/* ============================================================================
+   Keyframes
+   ========================================================================= */
+
+@keyframes ktm-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ktm-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ktm-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ktm-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Skeletons sweep rather than blink — reads as "loading", not "broken" */
+@keyframes ktm-shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes ktm-progress {
+  0%   { transform: translateX(-100%) scaleX(0.4); }
+  50%  { transform: translateX(0%) scaleX(0.7); }
+  100% { transform: translateX(100%) scaleX(0.4); }
+}
+
+/* ============================================================================
+   Accessibility & print
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .lift:hover {
+    transform: none;
+  }
+  .press:active {
+    transform: none;
+  }
+}
+
+@media print {
+  .print\:hidden,
+  [data-print="hide"] {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .elev-1,
+  .elev-2,
+  .elev-3,
+  .elev-4 {
+    box-shadow: none !important;
+  }
+  [data-print="page"] {
+    border: 0 !important;
+    padding: 0 !important;
+  }
+}
