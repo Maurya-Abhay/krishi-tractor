@@ -22,15 +22,21 @@ const ratelimit = redis
   : null;
 
 export async function checkRateLimit(identifier: string): Promise<{ success: boolean }> {
-  // Without Redis configured (e.g. local dev), rate limiting is skipped
-  // rather than blocking development. Production deployments MUST set
-  // UPSTASH_REDIS_REST_URL / TOKEN — this is enforced in the production
-  // checklist, not silently ignored.
+  // Set RATE_LIMIT_FAIL_CLOSED=true only when Upstash is guaranteed to be configured.
+  const failClosed = process.env.RATE_LIMIT_FAIL_CLOSED === "true";
+
+  // Without Redis configured, skip rate limiting by default so auth does not
+  // become unavailable in production due to missing Upstash env vars.
   if (!ratelimit) {
-    if (process.env.NODE_ENV === "production") {
-      console.error("Rate limiting is not configured in production. Failing closed.");
+    if (process.env.NODE_ENV === "production" && failClosed) {
+      console.error("Rate limiting is not configured in production and RATE_LIMIT_FAIL_CLOSED=true.");
       return { success: false };
     }
+
+    if (process.env.NODE_ENV === "production") {
+      console.warn("Rate limiting is not configured in production. Continuing without rate limiting.");
+    }
+
     return { success: true };
   }
 
