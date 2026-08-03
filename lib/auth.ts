@@ -21,16 +21,55 @@ export const authOptions: NextAuthOptions = {
 
         const { phone, password } = parsed.data;
         const normalizedPhone = phone.replace(/\D/g, "");
+        const seedAdminName = process.env.SEED_ADMIN_NAME;
+        const seedAdminPhone = process.env.SEED_ADMIN_PHONE?.replace(/\D/g, "");
+        const seedAdminPassword = process.env.SEED_ADMIN_PASSWORD;
 
         const rateLimit = await checkRateLimit(`login:${normalizedPhone}`);
         if (!rateLimit.success) {
           throw new Error("Too many login attempts. Please try again later.");
         }
 
-        const user = await prisma.user.findUnique({ where: { phone: normalizedPhone } });
+        let user = await prisma.user.findUnique({ where: { phone: normalizedPhone } });
+
+        // Self-heal admin login when production DB was deployed before seeding.
+        if (
+          !user &&
+          seedAdminName &&
+          seedAdminPhone &&
+          seedAdminPassword &&
+          normalizedPhone === seedAdminPhone
+        ) {
+          const passwordHash = await bcrypt.hash(seedAdminPassword, 12);
+          user = await prisma.user.create({
+            data: {
+              name: seedAdminName,
+              phone: seedAdminPhone,
+              passwordHash,
+            },
+          });
+        }
+
         if (!user) return null;
 
-        const isValid = await bcrypt.compare(password, user.passwordHash);
+        let isValid = await bcrypt.compare(password, user.passwordHash);
+
+        // If admin exists with stale hash, repair it when seed admin password is used.
+        if (
+          !isValid &&
+          seedAdminPhone &&
+          seedAdminPassword &&
+          normalizedPhone === seedAdminPhone &&
+          password === seedAdminPassword
+        ) {
+          const passwordHash = await bcrypt.hash(seedAdminPassword, 12);
+          user = await prisma.user.update({
+            where: { id: user.id },
+            data: { passwordHash },
+          });
+          isValid = true;
+        }
+
         if (!isValid) return null;
 
         return { id: user.id, name: user.name, phone: user.phone };
