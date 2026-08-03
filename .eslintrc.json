@@ -1,8 +1,10 @@
 {
   "extends": ["next/core-web-vitals"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
   "rules": {
-    // plugin not always available in some CI/dev environments; disable for now
     "@typescript-eslint/no-explicit-any": "off",
+    "react/no-unescaped-entities": "off",
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "prefer-const": "error"
   }
