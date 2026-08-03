@@ -6,7 +6,9 @@ import { loginSchema } from "@/lib/validations/report";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 const normalizeUrl = (value?: string) => value?.trim().replace(/\/+$/g, "");
-const normalizedNextAuthUrl = normalizeUrl(process.env.NEXTAUTH_URL) ??
+const previewUrl = process.env.VERCEL_ENV === "preview" ? process.env.VERCEL_URL : undefined;
+const hostUrl = previewUrl ? previewUrl : process.env.NEXTAUTH_URL;
+const normalizedNextAuthUrl = normalizeUrl(hostUrl) ??
   (process.env.VERCEL_URL
     ? `https://${normalizeUrl(process.env.VERCEL_URL.replace(/^https?:\/\//, ""))}`
     : undefined);
@@ -16,7 +18,7 @@ if (normalizedNextAuthUrl) {
 }
 
 if (!process.env.NEXTAUTH_URL) {
-  console.warn("NEXTAUTH_URL is not configured. Authentication may fail in production.");
+  console.warn("NEXTAUTH_URL is not configured. Authentication may fail in production or preview deployments.");
 }
 if (!process.env.NEXTAUTH_SECRET) {
   console.warn("NEXTAUTH_SECRET is not configured. NextAuth security may be broken.");
