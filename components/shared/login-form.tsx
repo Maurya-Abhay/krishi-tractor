@@ -31,8 +31,10 @@ export function LoginForm() {
     });
     setIsSubmitting(false);
 
+    console.log("signIn result", result);
+
     if (result?.error) {
-      toast.error("Invalid phone number or password.");
+      toast.error(`Login failed: ${result.error}`);
       return;
     }
 
@@ -44,7 +46,7 @@ export function LoginForm() {
   return (
     <Card>
       <CardContent className="pt-6">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} method="post" className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="phone">Phone Number</Label>
             <Input

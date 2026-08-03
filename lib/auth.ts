@@ -7,15 +7,20 @@ import { checkRateLimit } from "@/lib/rate-limit";
 
 const normalizeUrl = (value?: string) => value?.trim().replace(/\/+$/g, "");
 const previewUrl = process.env.VERCEL_ENV === "preview" ? process.env.VERCEL_URL : undefined;
-const hostUrl = previewUrl ? previewUrl : process.env.NEXTAUTH_URL;
+const envUrl = normalizeUrl(process.env.NEXTAUTH_URL);
+const devPort = process.env.PORT;
+const localFallback = devPort ? `http://localhost:${devPort}` : envUrl?.startsWith("http://localhost") ? envUrl : "http://localhost:3000";
+const hostUrl = previewUrl ? previewUrl : envUrl?.startsWith("http://localhost") ? localFallback : envUrl;
 const normalizedNextAuthUrl = normalizeUrl(hostUrl) ??
   (process.env.VERCEL_URL
     ? `https://${normalizeUrl(process.env.VERCEL_URL.replace(/^https?:\/\//, ""))}`
-    : undefined);
+    : localFallback);
 
 if (normalizedNextAuthUrl) {
   process.env.NEXTAUTH_URL = normalizedNextAuthUrl;
 }
+
+console.info("Effective NEXTAUTH_URL:", process.env.NEXTAUTH_URL);
 
 if (!process.env.NEXTAUTH_URL) {
   console.warn("NEXTAUTH_URL is not configured. Authentication may fail in production or preview deployments.");
