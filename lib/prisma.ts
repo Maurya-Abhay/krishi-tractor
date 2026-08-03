@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { parse } from "url";
 
 function getDatabaseUrl() {
   const databaseUrl = process.env.DATABASE_URL;
@@ -11,16 +10,21 @@ function getDatabaseUrl() {
     return databaseUrl;
   }
 
-  const parsed = parse(databaseUrl, true);
-  const host = parsed.host ?? "";
-  const isSupabase = host.includes("supabase.co");
+  try {
+    const url = new URL(databaseUrl);
+    const host = url.host;
+    const isSupabase = host.includes("supabase.co");
 
-  if (!isSupabase) {
+    if (!isSupabase) {
+      return databaseUrl;
+    }
+
+    url.searchParams.set("sslmode", "require");
+    return url.toString();
+  } catch (error) {
+    console.warn("Failed to normalize DATABASE_URL for SSL; using original value.", error);
     return databaseUrl;
   }
-
-  const separator = databaseUrl.includes("?") ? "&" : "?";
-  return `${databaseUrl}${separator}sslmode=require`;
 }
 
 const normalizedDatabaseUrl = getDatabaseUrl();

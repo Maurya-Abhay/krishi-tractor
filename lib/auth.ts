@@ -5,10 +5,21 @@ import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validations/report";
 import { checkRateLimit } from "@/lib/rate-limit";
 
-const normalizedNextAuthUrl = process.env.NEXTAUTH_URL?.replace(/\/+$|^\s+|\s+$/g, "") ??
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL.replace(/^https?:\/\//, "").replace(/\/+$|^\s+|\s+$/g, "")}` : undefined);
+const normalizeUrl = (value?: string) => value?.trim().replace(/\/+$/g, "");
+const normalizedNextAuthUrl = normalizeUrl(process.env.NEXTAUTH_URL) ??
+  (process.env.VERCEL_URL
+    ? `https://${normalizeUrl(process.env.VERCEL_URL.replace(/^https?:\/\//, ""))}`
+    : undefined);
+
 if (normalizedNextAuthUrl) {
   process.env.NEXTAUTH_URL = normalizedNextAuthUrl;
+}
+
+if (!process.env.NEXTAUTH_URL) {
+  console.warn("NEXTAUTH_URL is not configured. Authentication may fail in production.");
+}
+if (!process.env.NEXTAUTH_SECRET) {
+  console.warn("NEXTAUTH_SECRET is not configured. NextAuth security may be broken.");
 }
 
 export const authOptions: NextAuthOptions = {
@@ -23,7 +34,13 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const parsed = loginSchema.safeParse(credentials);
-        if (!parsed.success) return null;
+        if (!parsed.success) {
+          console.warn("NextAuth authorize validation failed", {
+            credentials: { phone: credentials?.phone ?? null },
+            errors: parsed.error.format(),
+          });
+          return null;
+        }
 
         const { phone, password } = parsed.data;
         const normalizedPhone = phone.replace(/\D/g, "");
@@ -37,6 +54,9 @@ export const authOptions: NextAuthOptions = {
         }
 
         let user = await prisma.user.findUnique({ where: { phone: normalizedPhone } });
+        if (!user) {
+          console.warn("NextAuth authorize: no user found", { normalizedPhone });
+        }
 
         // Self-heal admin login when production DB was deployed before seeding.
         if (
