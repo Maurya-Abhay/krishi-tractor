@@ -5,6 +5,12 @@ import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/lib/validations/report";
 import { checkRateLimit } from "@/lib/rate-limit";
 
+const normalizedNextAuthUrl = process.env.NEXTAUTH_URL?.replace(/\/+$|^\s+|\s+$/g, "") ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL.replace(/^https?:\/\//, "").replace(/\/+$|^\s+|\s+$/g, "")}` : undefined);
+if (normalizedNextAuthUrl) {
+  process.env.NEXTAUTH_URL = normalizedNextAuthUrl;
+}
+
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 }, // 30 days
   pages: { signIn: "/login" },
