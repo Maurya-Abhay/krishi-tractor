@@ -17,6 +17,6 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    "/((?!login|terms|privacy|api/auth|_next/static|_next/image|favicon.ico|manifest.json|sw.js|icons/|apple-touch-icon.png).*)",
+    "/((?!login|terms|privacy|support|api/auth|_next/static|_next/image|favicon.ico|manifest.json|sw.js|icons/|apple-touch-icon.png).*)",
   ],
 };
