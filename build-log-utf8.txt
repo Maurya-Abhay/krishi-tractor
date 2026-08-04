@@ -1,0 +1,365 @@
+﻿
+> krishi-tractor-management@1.0.0 build
+> prisma generate && next build --no-lint
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+Γ£ö Generated Prisma Client (v6.2.1) to .\node_modules\@prisma\client in 121ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+node.exe :  ΓÜá Linting is disabled.
+At C:\Users\abhay\AppData\Local\nvm\v22.13.0\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( ΓÜá Linting is disabled.:String) 
+    [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   Γû▓ Next.js 15.5.22
+   - Environments: .env
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully in 6.3s
+   Checking validity of types ...
+   Collecting page data ...
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\[id]\route.js:1:12288)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\[id]\route.js:1:12725)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 37917 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\[id]\route.js:1:2515)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\[id]\route.js:1:15955)
+    at c.X (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:1285)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\[id]\route.js:1:15933)
+    at Object.<anonymous> 
+(C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\[id]\route.js:1:15987) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\[id]\route.js:1:5589)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\[id]\route.js:1:6026)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 72035 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\[id]\route.js:1:6510)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\[id]\route.js:1:13206)
+    at c.X (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:1285)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\[id]\route.js:1:13184)
+    at Object.<anonymous> 
+(C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\[id]\route.js:1:13238) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\[id]\route.js:1:11748)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\[id]\route.js:1:12185)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 42075 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\[id]\route.js:1:2517)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\[id]\route.js:1:13224)
+    at c.X (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:1285)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\[id]\route.js:1:13202)
+    at Object.<anonymous> 
+(C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\[id]\route.js:1:13256) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\route.js:1:12032)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\route.js:1:12469)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 1806 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\route.js:1:530)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\route.js:1:15696)
+    at c.X (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:1285)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\route.js:1:15674)
+    at Object.<anonymous> 
+(C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\customers\route.js:1:15727) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\route.js:1:11453)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\route.js:1:11890)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 66147 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\route.js:1:9094)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 13008 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\route.js:1:568)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 59708 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\route.js:1:3423)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\[id]\route.js:1:12518)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\[id]\route.js:1:12955)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 57174 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\[id]\route.js:1:3459)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\[id]\route.js:1:14710)
+    at c.X (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:1285)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\[id]\route.js:1:14688)
+    at Object.<anonymous> 
+(C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\[id]\route.js:1:14742) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\auth\[...nextauth]\route.js:1:10500)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\auth\[...nextauth]\route.js:1:10937)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 66147 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\auth\[...nextauth]\route.js:1:8141)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 57524 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\auth\[...nextauth]\route.js:1:2639)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\auth\[...nextauth]\route.js:1:12021)
+    at c.X (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:1285) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Effective NEXTAUTH_URL: http://localhost:3001
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\route.js:1:5589)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\route.js:1:6026)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 92579 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\route.js:1:7240)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\route.js:1:13335)
+    at c.X (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:1285)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\route.js:1:13313)
+    at Object.<anonymous> 
+(C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\payments\route.js:1:13367) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system (1)
+\krishi-tractor\.next\server\app\api\reports\[customerId]\pdf\route.js:1:438272
+)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system (1)\kri
+shi-tractor\.next\server\app\api\reports\[customerId]\pdf\route.js:1:438709)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 66147 (C:\Users\abhay\Downloads\krishi-tractor-management-system (1)\kri
+shi-tractor\.next\server\app\api\reports\[customerId]\pdf\route.js:1:435913)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 13008 (C:\Users\abhay\Downloads\krishi-tractor-management-system (1)\kri
+shi-tractor\.next\server\app\api\reports\[customerId]\pdf\route.js:1:17387)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 14040 (C:\Users\abhay\Downloads\krishi-tractor-management-system (1)\kri
+shi-tractor\.next\server\app\api\reports\[customerId]\pdf\route.js:1:19293)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Effective NEXTAUTH_URL: http://localhost:3001
+Effective NEXTAUTH_URL: http://localhost:3001
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\route.js:1:12680)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\route.js:1:13117)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 33222 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\route.js:1:2504)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\route.js:1:14869)
+    at c.X (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:1285)
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\route.js:1:14847)
+    at Object.<anonymous> 
+(C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\work-entries\route.js:1:14901) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Effective NEXTAUTH_URL: http://localhost:3001
+Effective NEXTAUTH_URL: http://localhost:3001
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\reports\[customerId]\route.js:1:12357)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\reports\[customerId]\route.js:1:12794)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 66147 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\reports\[customerId]\route.js:1:9998)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 13008 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\reports\[customerId]\route.js:1:1223)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 14824 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\reports\[customerId]\route.js:1:2887)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Effective NEXTAUTH_URL: http://localhost:3001
+Effective NEXTAUTH_URL: http://localhost:3001
+Effective NEXTAUTH_URL: http://localhost:3001
+Effective NEXTAUTH_URL: http://localhost:3001
+Effective NEXTAUTH_URL: http://localhost:3001
+Effective NEXTAUTH_URL: http://localhost:3001
+   Generating static pages (0/9) ...
+Failed to normalize DATABASE_URL for SSL; using original value. TypeError: 
+Invalid URL
+    at <unknown> (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\route.js:1:11453)
+    at 70373 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\route.js:1:11890)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 66147 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\route.js:1:9094)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 13008 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\route.js:1:568)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143)
+    at 59708 (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\app\api\services\route.js:1:3423)
+    at c (C:\Users\abhay\Downloads\krishi-tractor-management-system 
+(1)\krishi-tractor\.next\server\webpack-runtime.js:1:143) {
+  code: 'ERR_INVALID_URL',
+  input: 'SUPABASE_TRANSACTION_POOLER_URL'
+}
+Effective NEXTAUTH_URL: http://localhost:3001
+   Generating static pages (2/9) 
+   Generating static pages (4/9) 
+   Generating static pages (6/9) 
+ Γ£ô Generating static pages (9/9)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+Γöî ╞Æ /                                      180 B         103 kB
+Γö£ Γùï /_not-found                            998 B         104 kB
+Γö£ ╞Æ /api/auth/[...nextauth]                180 B         103 kB
+Γö£ ╞Æ /api/customers                         180 B         103 kB
+Γö£ ╞Æ /api/customers/[id]                    180 B         103 kB
+Γö£ ╞Æ /api/payments                          180 B         103 kB
+Γö£ ╞Æ /api/payments/[id]                     180 B         103 kB
+Γö£ ╞Æ /api/reports/[customerId]              180 B         103 kB
+Γö£ ╞Æ /api/reports/[customerId]/pdf          180 B         103 kB
+Γö£ ╞Æ /api/services                          180 B         103 kB
+Γö£ ╞Æ /api/services/[id]                     180 B         103 kB
+Γö£ ╞Æ /api/work-entries                      180 B         103 kB
+Γö£ ╞Æ /api/work-entries/[id]                 180 B         103 kB
+Γö£ ╞Æ /customers                           3.07 kB         186 kB
+Γö£ Γùï /customers/[id]                       9.3 kB         204 kB
+Γö£ ╞Æ /dashboard                             165 B         106 kB
+Γö£ ╞Æ /login                               2.83 kB         151 kB
+Γö£ ╞Æ /payments                            4.05 kB         184 kB
+Γö£ ╞Æ /reports                             7.07 kB         151 kB
+Γö£ ╞Æ /services                            5.09 kB         162 kB
+Γöö ╞Æ /work                                3.33 kB         203 kB
++ First Load JS shared by all             103 kB
+  Γö£ chunks/1255-31f47ebe9b12c7e5.js      46.3 kB
+  Γö£ chunks/4bd1b696-f785427dddbba9fb.js  54.2 kB
+  Γöö other shared chunks (total)          2.07 kB
+
+
+╞Æ Middleware                             61.3 kB
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+
