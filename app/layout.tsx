@@ -5,6 +5,7 @@ import { QueryProvider } from "@/components/shared/query-provider";
 import { ThemeProvider, themeScript } from "@/components/shared/theme-provider";
 import { RouteProgress } from "@/components/ui/route-progress";
 import SwRegister from "@/components/shared/sw-register";
+import AppToaster from "@/components/shared/app-toaster";
 import "./globals.css";
 
 // Dynamic font loading optimized with display: swap
@@ -79,7 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {children}
               </div>
 
-              {/* Toaster removed per performance/UX request */}
+              <AppToaster />
             </QueryProvider>
           </AuthProvider>
         </ThemeProvider>
