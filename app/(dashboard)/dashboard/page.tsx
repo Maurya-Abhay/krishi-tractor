@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { Users, Hammer, Wallet, AlertCircle, CheckCircle2 } from "lucide-react";
 import { getDashboardStats } from "@/lib/data/dashboard";
 import { formatCurrency } from "@/lib/calculations";
+import { Button } from "@/components/ui/button";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
 
@@ -14,6 +16,18 @@ export default async function DashboardPage() {
       <div>
         <h1 className="text-base font-semibold tracking-tight">Dashboard</h1>
         <p className="text-xs text-muted-foreground">Overview of your business today.</p>
+      </div>
+
+      <div className="flex flex-col gap-2 sm:hidden">
+        <p className="text-xs text-muted-foreground">Quick actions</p>
+        <div className="grid grid-cols-2 gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/reports/backup">Backup Report</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm">
+            <Link href="/services">Services</Link>
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">

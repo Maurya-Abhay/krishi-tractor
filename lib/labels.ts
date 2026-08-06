@@ -14,6 +14,7 @@ export const L = {
   work: { en: "Work", hi: "काम" },
   payments: { en: "Payments", hi: "पैसा" },
   reports: { en: "Reports", hi: "रिपोर्ट" },
+  backupReport: { en: "Backup Report", hi: "बैकअप रिपोर्ट" },
   customers: { en: "Customers", hi: "ग्राहक" },
   services: { en: "Services", hi: "सेवाएँ" },
 

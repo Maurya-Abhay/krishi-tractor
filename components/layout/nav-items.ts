@@ -37,6 +37,12 @@ export const NAV_ITEMS: NavItem[] = [
   },
   { href: "/reports", label: L.reports, icon: ClipboardList, mobile: true },
   {
+    href: "/reports/backup",
+    label: L.backupReport,
+    icon: ClipboardList,
+    mobile: false,
+  },
+  {
     href: "/services",
     label: L.services,
     icon: Wrench,
@@ -50,5 +56,7 @@ export const NAV_ITEMS: NavItem[] = [
  * would light up two items if one route were a prefix of another.
  */
 export function isActiveRoute(pathname: string, href: string): boolean {
-  return pathname === href || pathname.startsWith(`${href}/`);
+  const sorted = [...NAV_ITEMS].sort((a, b) => b.href.length - a.href.length);
+  const activeItem = sorted.find((item) => pathname === item.href || pathname.startsWith(`${item.href}/`));
+  return activeItem?.href === href;
 }

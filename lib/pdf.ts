@@ -3,38 +3,38 @@ import fs from "fs";
 import path from "path";
 import { PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont } from "pdf-lib";
 import { formatCurrency, formatDate } from "@/lib/calculations";
-import type { getCustomerReport } from "@/lib/data/reports";
+import type { getCustomerReport, BackupReport } from "@/lib/data/reports";
 
 type Report = Awaited<ReturnType<typeof getCustomerReport>>;
 
 // Constants for Page Setup (A4 Portrait)
 const PAGE_WIDTH = 595.28;
 const PAGE_HEIGHT = 841.89;
-const MARGIN = 40;
+const MARGIN = 36; // Slightly tighter margin for better space usage
 const CONTENT_WIDTH = PAGE_WIDTH - MARGIN * 2;
 
-// Brand Palette (Modern Corporate Slate / Indigo)
-const COLOR_PRIMARY = rgb(0.09, 0.17, 0.31);    // Deep Navy/Indigo (#172B4D)
-const COLOR_SECONDARY = rgb(0.38, 0.45, 0.55);  // Slate Gray
-const COLOR_TEXT_DARK = rgb(0.12, 0.16, 0.22);  // Charcoal Body Text
-const COLOR_BG_LIGHT = rgb(0.96, 0.97, 0.98);   // Very Soft Blue-Gray
-const COLOR_BORDER = rgb(0.88, 0.90, 0.92);     // Light Gray Border
-const COLOR_GREEN = rgb(0.05, 0.6, 0.35);       // Paid accent
-const COLOR_RED = rgb(0.85, 0.2, 0.2);          // Pending accent
+// Modern Premium Slate / Indigo Palette
+const COLOR_PRIMARY = rgb(0.06, 0.09, 0.16);     // #0F172A (Deep Slate)
+const COLOR_ACCENT = rgb(0.31, 0.27, 0.90);      // #4F46E5 (Indigo Accent)
+const COLOR_SECONDARY = rgb(0.39, 0.45, 0.55);   // #64748B (Muted Slate)
+const COLOR_TEXT_DARK = rgb(0.12, 0.16, 0.23);   // #1E293B (Body Text)
+const COLOR_BG_LIGHT = rgb(0.97, 0.98, 0.99);    // #F8FAFC (Soft Container Fill)
+const COLOR_BORDER = rgb(0.89, 0.91, 0.94);      // #E2E8F0 (Crisp Border)
+const COLOR_GREEN = rgb(0.02, 0.59, 0.41);       // #059669 (Paid/Success)
+const COLOR_RED = rgb(0.86, 0.15, 0.15);         // #DC2626 (Pending/Alert)
+const COLOR_WHITE = rgb(1, 1, 1);
 
 export async function generateReportPdf(report: Report): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
 
-  // Try loading a Unicode TTF (recommended: public/fonts/NotoSans-Regular.ttf).
-  // If not available, fall back to StandardFonts (WinAnsi) and sanitize text.
   let font: PDFFont;
   let boldFont: PDFFont;
   let isUnicodeFont = false;
+
   try {
     const fontPath = path.join(process.cwd(), "public", "fonts", "NotoSans-Regular.ttf");
     const bytes = await fs.promises.readFile(fontPath);
     font = await doc.embedFont(bytes);
-    // Reuse same font for bold if no bold file provided.
     boldFont = font;
     isUnicodeFont = true;
   } catch (e) {
@@ -46,19 +46,14 @@ export async function generateReportPdf(report: Report): Promise<Uint8Array> {
   let page = doc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
   let y = PAGE_HEIGHT;
 
-  // Helper: Currency standardizing
-  const safeCurrency = (v: number | string) => {
-    return formatCurrency(v).replace(/₹/g, "Rs. ");
-  };
+  // Helpers
+  const safeCurrency = (v: number | string) => formatCurrency(v).replace(/₹/g, "Rs. ");
 
   const sanitizeForWinAnsi = (s: string) => {
-    if (isUnicodeFont) return s;
-    if (!s) return s;
+    if (isUnicodeFont || !s) return s;
     return String(s).replace(/[^\x00-\xFF]/g, "?");
   };
 
-  // If we don't have a Unicode-capable embedded font, produce a sanitized
-  // shallow-copy of the report where user-provided strings are made WinAnsi-safe.
   const safeReport: Report = ((): Report => {
     if (isUnicodeFont) return report;
     return {
@@ -78,9 +73,9 @@ export async function generateReportPdf(report: Report): Promise<Uint8Array> {
       payments: report.payments.map((p) => ({ ...p, note: sanitizeForWinAnsi(p.note || "") })),
     } as Report;
   })();
+
   const reportData = safeReport;
 
-  // Helper: Truncate long strings to fit cell widths
   const truncateText = (text: string, maxWidth: number, fontSize: number, isBold = false) => {
     const f = isBold ? boldFont : font;
     if (f.widthOfTextAtSize(text, fontSize) <= maxWidth) return text;
@@ -91,53 +86,32 @@ export async function generateReportPdf(report: Report): Promise<Uint8Array> {
     return truncated + "...";
   };
 
-  // Header Banner Component
-  const drawHeaderBanner = () => {
-    // Top primary accent block
-    page.drawRectangle({
-      x: 0,
-      y: PAGE_HEIGHT - 70,
-      width: PAGE_WIDTH,
-      height: 70,
-      color: COLOR_PRIMARY,
-    });
-
-    // Company Title
-    page.drawText("KRISHI TRACTOR MANAGEMENT", {
-      x: MARGIN,
-      y: PAGE_HEIGHT - 38,
-      size: 16,
-      font: boldFont,
-      color: rgb(1, 1, 1),
-    });
-
-    // Subtitle / Document Type
-    page.drawText("CUSTOMER STATEMENT & ACCOUNT REPORT", {
-      x: MARGIN,
-      y: PAGE_HEIGHT - 54,
-      size: 8,
-      font,
-      color: rgb(0.8, 0.85, 0.95),
-    });
-
-    y = PAGE_HEIGHT - 90;
+  const drawTextRight = (
+    p: PDFPage,
+    text: string,
+    f: PDFFont,
+    size: number,
+    rightX: number,
+    textY: number,
+    color = COLOR_TEXT_DARK
+  ) => {
+    const w = f.widthOfTextAtSize(text, size);
+    p.drawText(text, { x: rightX - w, y: textY, size, font: f, color });
   };
 
-  // Watermark Component
   const drawWatermark = (p: PDFPage) => {
     p.drawText("KRISHI TRACTOR", {
-      x: PAGE_WIDTH / 2 - 140,
+      x: PAGE_WIDTH / 2 - 130,
       y: PAGE_HEIGHT / 2 - 20,
-      size: 42,
+      size: 38,
       font: boldFont,
-      color: rgb(0.94, 0.95, 0.97),
-      opacity: 0.6,
+      color: rgb(0.92, 0.94, 0.96),
+      opacity: 0.5,
     });
   };
 
-  // Pagination Space Check
   const ensureSpace = (neededHeight: number) => {
-    if (y - neededHeight < MARGIN + 30) {
+    if (y - neededHeight < MARGIN + 25) {
       page = doc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
       drawWatermark(page);
       y = PAGE_HEIGHT - MARGIN;
@@ -146,140 +120,176 @@ export async function generateReportPdf(report: Report): Promise<Uint8Array> {
     return false;
   };
 
-  // Start PDF Construction
+  // Header Component
+  const drawHeaderBanner = () => {
+    // Top Color Stripe
+    page.drawRectangle({
+      x: 0,
+      y: PAGE_HEIGHT - 6,
+      width: PAGE_WIDTH,
+      height: 6,
+      color: COLOR_ACCENT,
+    });
+
+    // Branding
+    page.drawText("KRISHI TRACTOR MANAGEMENT", {
+      x: MARGIN,
+      y: PAGE_HEIGHT - 32,
+      size: 14,
+      font: boldFont,
+      color: COLOR_PRIMARY,
+    });
+
+    page.drawText("CUSTOMER STATEMENT & ACCOUNT REPORT", {
+      x: MARGIN,
+      y: PAGE_HEIGHT - 44,
+      size: 7.5,
+      font: boldFont,
+      color: COLOR_SECONDARY,
+    });
+
+    // Date Range Badge (Right Side)
+    const periodText = `${formatDate(reportData.range.startDate)} - ${formatDate(reportData.range.endDate)}`;
+    drawTextRight(page, "STATEMENT PERIOD", boldFont, 7, PAGE_WIDTH - MARGIN, PAGE_HEIGHT - 30, COLOR_SECONDARY);
+    drawTextRight(page, periodText, boldFont, 9, PAGE_WIDTH - MARGIN, PAGE_HEIGHT - 42, COLOR_PRIMARY);
+
+    y = PAGE_HEIGHT - 58;
+  };
+
   drawWatermark(page);
   drawHeaderBanner();
 
-  // --- SECTION 1: Customer Details Box ---
-  const custHeight = 65;
+  // --- SECTION 1 & 2: Customer Box + Key Metrics (Compact Split Layout) ---
+  const custWidth = CONTENT_WIDTH * 0.52;
+  const metricsWidth = CONTENT_WIDTH * 0.46;
+  const sectionHeight = 58;
+
+  // Customer Info Box (Left)
   page.drawRectangle({
     x: MARGIN,
-    y: y - custHeight,
-    width: CONTENT_WIDTH,
-    height: custHeight,
+    y: y - sectionHeight,
+    width: custWidth,
+    height: sectionHeight,
     color: COLOR_BG_LIGHT,
     borderColor: COLOR_BORDER,
     borderWidth: 1,
   });
 
-  const custY = y - 18;
+  const custY = y - 14;
   const customerName = reportData.customer?.name || "N/A";
-  const customerAddress = reportData.customer?.address || "N/A";
+  const customerAddress = reportData.customer?.address || "";
   const customerPhone = reportData.customer?.phone ? `Mob: ${reportData.customer.phone}` : "";
 
-  page.drawText("STATEMENT FOR:", { x: MARGIN + 12, y: custY, size: 8, font: boldFont, color: COLOR_SECONDARY });
-  page.drawText(truncateText(customerName, 260, 11, true), { x: MARGIN + 12, y: custY - 14, size: 11, font: boldFont, color: COLOR_TEXT_DARK });
-  page.drawText(truncateText(`${customerAddress} ${customerPhone ? " | " + customerPhone : ""}`, 300, 9), {
-    x: MARGIN + 12,
-    y: custY - 28,
-    size: 9,
+  page.drawText("STATEMENT FOR", { x: MARGIN + 10, y: custY, size: 7, font: boldFont, color: COLOR_SECONDARY });
+  page.drawText(truncateText(customerName, custWidth - 20, 10, true), {
+    x: MARGIN + 10,
+    y: custY - 13,
+    size: 10,
+    font: boldFont,
+    color: COLOR_PRIMARY,
+  });
+
+  const subDetails = [customerAddress, customerPhone].filter(Boolean).join(" | ");
+  page.drawText(truncateText(subDetails || "No contact details provided", custWidth - 20, 8), {
+    x: MARGIN + 10,
+    y: custY - 26,
+    size: 8,
     font,
     color: COLOR_SECONDARY,
   });
 
-  // Statement Meta Info (Right side of Customer Box)
-  const metaX = MARGIN + CONTENT_WIDTH - 160;
-  page.drawText("STATEMENT PERIOD:", { x: metaX, y: custY, size: 8, font: boldFont, color: COLOR_SECONDARY });
-  page.drawText(`${formatDate(reportData.range.startDate)} - ${formatDate(reportData.range.endDate)}`, {
-    x: metaX,
-    y: custY - 14,
-    size: 9,
-    font: boldFont,
-    color: COLOR_TEXT_DARK,
-  });
-
-  y -= custHeight + 20;
-
-  // --- SECTION 2: Key Metrics Cards ---
-  const cardWidth = (CONTENT_WIDTH - 20) / 3;
-  const cardHeight = 45;
+  // Metrics Box (Right Side - 3 Compact Columns)
+  const metricsX = MARGIN + custWidth + (CONTENT_WIDTH * 0.02);
+  const cardW = (metricsWidth - 10) / 3;
 
   const cards = [
     { label: "TOTAL WORK", value: safeCurrency(reportData.totalWork), color: COLOR_TEXT_DARK },
     { label: "TOTAL PAID", value: safeCurrency(reportData.totalPaid), color: COLOR_GREEN },
-    { label: "BALANCE DUE", value: safeCurrency(reportData.pendingBalance), color: COLOR_RED },
+    { label: "DUE BALANCE", value: safeCurrency(reportData.pendingBalance), color: COLOR_RED },
   ];
 
   cards.forEach((card, i) => {
-    const cardX = MARGIN + i * (cardWidth + 10);
+    const cX = metricsX + i * (cardW + 5);
     page.drawRectangle({
-      x: cardX,
-      y: y - cardHeight,
-      width: cardWidth,
-      height: cardHeight,
-      color: rgb(0.99, 0.99, 1),
+      x: cX,
+      y: y - sectionHeight,
+      width: cardW,
+      height: sectionHeight,
+      color: COLOR_BG_LIGHT,
       borderColor: COLOR_BORDER,
       borderWidth: 1,
     });
 
-    page.drawText(card.label, { x: cardX + 10, y: y - 14, size: 7, font: boldFont, color: COLOR_SECONDARY });
-    page.drawText(card.value, { x: cardX + 10, y: y - 32, size: 12, font: boldFont, color: card.color });
+    page.drawText(card.label, { x: cX + 6, y: y - 14, size: 6.5, font: boldFont, color: COLOR_SECONDARY });
+    page.drawText(truncateText(card.value, cardW - 8, 9.5, true), {
+      x: cX + 6,
+      y: y - 32,
+      size: 9.5,
+      font: boldFont,
+      color: card.color,
+    });
   });
 
-  y -= cardHeight + 25;
+  y -= sectionHeight + 18;
 
   // --- SECTION 3: Work History Table ---
-  page.drawText("WORK HISTORY", { x: MARGIN, y, size: 11, font: boldFont, color: COLOR_PRIMARY });
-  y -= 12;
+  page.drawText("WORK HISTORY", { x: MARGIN, y, size: 10, font: boldFont, color: COLOR_PRIMARY });
+  y -= 10;
 
   const workCols = [
     { label: "DATE", width: 75, align: "left" },
-    { label: "SERVICE", width: 175, align: "left" },
+    { label: "SERVICE DETAILS", width: 183, align: "left" },
     { label: "QTY", width: 85, align: "left" },
     { label: "RATE", width: 80, align: "right" },
     { label: "AMOUNT", width: 100, align: "right" },
   ];
 
-  // Table Header Function
   const renderTableHeader = (cols: typeof workCols) => {
     page.drawRectangle({
       x: MARGIN,
-      y: y - 18,
+      y: y - 16,
       width: CONTENT_WIDTH,
-      height: 18,
+      height: 16,
       color: COLOR_PRIMARY,
     });
 
     let currentX = MARGIN;
     cols.forEach((col) => {
-      let printX = currentX + 6;
       if (col.align === "right") {
-        const textWidth = boldFont.widthOfTextAtSize(col.label, 8);
-        printX = currentX + col.width - textWidth - 6;
+        drawTextRight(page, col.label, boldFont, 7.5, currentX + col.width - 6, y - 11, COLOR_WHITE);
+      } else {
+        page.drawText(col.label, { x: currentX + 6, y: y - 11, size: 7.5, font: boldFont, color: COLOR_WHITE });
       }
-      page.drawText(col.label, { x: printX, y: y - 12, size: 8, font: boldFont, color: rgb(1, 1, 1) });
       currentX += col.width;
     });
-    y -= 18;
+    y -= 16;
   };
 
   renderTableHeader(workCols);
 
   if (reportData.workEntries.length === 0) {
-    y -= 18;
-    page.drawText("No work records found for the selected period.", { x: MARGIN + 6, y, size: 9, font, color: COLOR_SECONDARY });
+    y -= 16;
+    page.drawText("No work records found for the selected period.", { x: MARGIN + 6, y: y - 10, size: 8.5, font, color: COLOR_SECONDARY });
     y -= 10;
   }
 
   reportData.workEntries.forEach((entry, index) => {
-    ensureSpace(20);
+    ensureSpace(16);
 
-    // Row Background (Zebra Striping)
     if (index % 2 === 0) {
       page.drawRectangle({
         x: MARGIN,
-        y: y - 16,
+        y: y - 15,
         width: CONTENT_WIDTH,
-        height: 16,
+        height: 15,
         color: COLOR_BG_LIGHT,
       });
     }
 
     const qtyText = entry.service.unit === "KATHA" ? `${Number(entry.katha)} Katha` : `${Number(entry.decimalHour)} Hr`;
-
     const rowData = [
       formatDate(entry.date),
-      truncateText(entry.service.name, 160, 8.5),
+      truncateText(entry.service.name, 170, 8),
       qtyText,
       safeCurrency(Number(entry.rate)),
       safeCurrency(Number(entry.total)),
@@ -288,48 +298,47 @@ export async function generateReportPdf(report: Report): Promise<Uint8Array> {
     let currentX = MARGIN;
     rowData.forEach((val, colIdx) => {
       const col = workCols[colIdx]!;
-      let printX = currentX + 6;
       if (col.align === "right") {
-        const textWidth = font.widthOfTextAtSize(val, 8.5);
-        printX = currentX + col.width - textWidth - 6;
+        drawTextRight(page, val, font, 8, currentX + col.width - 6, y - 11, COLOR_TEXT_DARK);
+      } else {
+        page.drawText(val, { x: currentX + 6, y: y - 11, size: 8, font, color: COLOR_TEXT_DARK });
       }
-      page.drawText(val, { x: printX, y: y - 12, size: 8.5, font, color: COLOR_TEXT_DARK });
       currentX += col.width;
     });
 
-    y -= 16;
+    y -= 15;
   });
 
-  y -= 25;
+  y -= 18;
 
   // --- SECTION 4: Payment History Table ---
-  ensureSpace(60);
-  page.drawText("PAYMENT HISTORY", { x: MARGIN, y, size: 11, font: boldFont, color: COLOR_PRIMARY });
-  y -= 12;
+  ensureSpace(45);
+  page.drawText("PAYMENT HISTORY", { x: MARGIN, y, size: 10, font: boldFont, color: COLOR_PRIMARY });
+  y -= 10;
 
   const paymentCols = [
     { label: "DATE", width: 90, align: "left" },
     { label: "AMOUNT PAID", width: 110, align: "right" },
-    { label: "REMARKS / NOTE", width: 315, align: "left" },
+    { label: "REMARKS / NOTE", width: 323, align: "left" },
   ];
 
   renderTableHeader(paymentCols);
 
   if (reportData.payments.length === 0) {
-    y -= 18;
-    page.drawText("No payment transactions recorded for this period.", { x: MARGIN + 6, y, size: 9, font, color: COLOR_SECONDARY });
+    y -= 16;
+    page.drawText("No payment transactions recorded for this period.", { x: MARGIN + 6, y: y - 10, size: 8.5, font, color: COLOR_SECONDARY });
     y -= 10;
   }
 
   reportData.payments.forEach((payment, index) => {
-    ensureSpace(20);
+    ensureSpace(16);
 
     if (index % 2 === 0) {
       page.drawRectangle({
         x: MARGIN,
-        y: y - 16,
+        y: y - 15,
         width: CONTENT_WIDTH,
-        height: 16,
+        height: 15,
         color: COLOR_BG_LIGHT,
       });
     }
@@ -337,64 +346,206 @@ export async function generateReportPdf(report: Report): Promise<Uint8Array> {
     const rowData = [
       formatDate(payment.date),
       safeCurrency(Number(payment.amount)),
-      truncateText(payment.note ?? "-", 300, 8.5),
+      truncateText(payment.note ?? "-", 310, 8),
     ];
 
     let currentX = MARGIN;
     rowData.forEach((val, colIdx) => {
       const col = paymentCols[colIdx]!;
-      let printX = currentX + 6;
-
       if (col.align === "right") {
-        const textWidth = (colIdx === 1 ? boldFont : font).widthOfTextAtSize(val, 8.5);
-        printX = currentX + col.width - textWidth - 6;
+        drawTextRight(page, val, boldFont, 8, currentX + col.width - 6, y - 11, COLOR_GREEN);
+      } else {
+        page.drawText(val, { x: currentX + 6, y: y - 11, size: 8, font, color: COLOR_TEXT_DARK });
       }
-
-      page.drawText(val, {
-        x: printX,
-        y: y - 12,
-        size: 8.5,
-        font: colIdx === 1 ? boldFont : font,
-        color: colIdx === 1 ? COLOR_GREEN : COLOR_TEXT_DARK,
-      });
       currentX += col.width;
     });
 
-    y -= 16;
+    y -= 15;
   });
 
-  // --- SECTION 5: Dynamic Global Footers ---
+  // --- Global Footer ---
   const totalPages = doc.getPageCount();
   for (let i = 0; i < totalPages; i++) {
     const p = doc.getPage(i);
-
-    // Separator line
     p.drawLine({
-      start: { x: MARGIN, y: MARGIN + 12 },
-      end: { x: PAGE_WIDTH - MARGIN, y: MARGIN + 12 },
+      start: { x: MARGIN, y: MARGIN + 10 },
+      end: { x: PAGE_WIDTH - MARGIN, y: MARGIN + 10 },
       thickness: 0.5,
       color: COLOR_BORDER,
     });
 
-    // Left Footer Branding
     p.drawText("Computer Generated Statement — Krishi Tractor Management System", {
       x: MARGIN,
       y: MARGIN - 2,
-      size: 7.5,
+      size: 7,
       font,
       color: COLOR_SECONDARY,
     });
 
-    // Right Footer Page Count
     const pageStr = `Page ${i + 1} of ${totalPages}`;
-    const pageStrWidth = font.widthOfTextAtSize(pageStr, 7.5);
-    p.drawText(pageStr, {
-      x: PAGE_WIDTH - MARGIN - pageStrWidth,
-      y: MARGIN - 2,
-      size: 7.5,
-      font,
-      color: COLOR_SECONDARY,
+    drawTextRight(p, pageStr, font, 7, PAGE_WIDTH - MARGIN, MARGIN - 2, COLOR_SECONDARY);
+  }
+
+  return doc.save();
+}
+
+// --- BACKUP REPORT GENERATOR ---
+export async function generateBackupReportPdf(report: BackupReport): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+
+  let font: PDFFont;
+  let boldFont: PDFFont;
+  try {
+    const fontPath = path.join(process.cwd(), "public", "fonts", "NotoSans-Regular.ttf");
+    const bytes = await fs.promises.readFile(fontPath);
+    font = await doc.embedFont(bytes);
+    boldFont = font;
+  } catch {
+    font = await doc.embedFont(StandardFonts.Helvetica);
+    boldFont = await doc.embedFont(StandardFonts.HelveticaBold);
+  }
+
+  let page = doc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
+  let y = PAGE_HEIGHT;
+  const safeCurrency = (v: number | string) => formatCurrency(v).replace(/₹/g, "Rs. ");
+
+  const drawTextRight = (
+    p: PDFPage,
+    text: string,
+    f: PDFFont,
+    size: number,
+    rightX: number,
+    textY: number,
+    color = COLOR_TEXT_DARK
+  ) => {
+    const w = f.widthOfTextAtSize(text, size);
+    p.drawText(text, { x: rightX - w, y: textY, size, font: f, color });
+  };
+
+  // Top Bar Accent
+  page.drawRectangle({ x: 0, y: PAGE_HEIGHT - 6, width: PAGE_WIDTH, height: 6, color: COLOR_ACCENT });
+
+  page.drawText("BACKUP SUMMARY REPORT", {
+    x: MARGIN,
+    y: PAGE_HEIGHT - 32,
+    size: 14,
+    font: boldFont,
+    color: COLOR_PRIMARY,
+  });
+
+  page.drawText("System Master Ledger & Balances Overview", {
+    x: MARGIN,
+    y: PAGE_HEIGHT - 44,
+    size: 7.5,
+    font,
+    color: COLOR_SECONDARY,
+  });
+
+  const periodText = `${formatDate(report.range.startDate)} - ${formatDate(report.range.endDate)}`;
+  drawTextRight(page, "PERIOD COVERED", boldFont, 7, PAGE_WIDTH - MARGIN, PAGE_HEIGHT - 30, COLOR_SECONDARY);
+  drawTextRight(page, periodText, boldFont, 8.5, PAGE_WIDTH - MARGIN, PAGE_HEIGHT - 42, COLOR_PRIMARY);
+
+  y = PAGE_HEIGHT - 60;
+
+  // Key Summary Cards (Row of 4)
+  const cardW = (CONTENT_WIDTH - 15) / 4;
+  const cardH = 42;
+
+  const summaryItems = [
+    { label: "CUSTOMERS", value: `${report.customerCount}`, color: COLOR_PRIMARY },
+    { label: "TOTAL WORK", value: safeCurrency(report.totalWork), color: COLOR_TEXT_DARK },
+    { label: "TOTAL RECEIVED", value: safeCurrency(report.totalPaid), color: COLOR_GREEN },
+    { label: "TOTAL PENDING", value: safeCurrency(report.pendingBalance), color: COLOR_RED },
+  ];
+
+  summaryItems.forEach((item, i) => {
+    const cX = MARGIN + i * (cardW + 5);
+    page.drawRectangle({
+      x: cX,
+      y: y - cardH,
+      width: cardW,
+      height: cardH,
+      color: COLOR_BG_LIGHT,
+      borderColor: COLOR_BORDER,
+      borderWidth: 1,
     });
+
+    page.drawText(item.label, { x: cX + 6, y: y - 12, size: 6.5, font: boldFont, color: COLOR_SECONDARY });
+    page.drawText(item.value, { x: cX + 6, y: y - 28, size: 9.5, font: boldFont, color: item.color });
+  });
+
+  y -= cardH + 18;
+
+  // Backup Table
+  const tableCols = [
+    { label: "CUSTOMER NAME", width: 233, align: "left" },
+    { label: "WORK TOTAL", width: 95, align: "right" },
+    { label: "PAID TOTAL", width: 95, align: "right" },
+    { label: "PENDING", width: 100, align: "right" },
+  ];
+
+  const drawTableHeader = () => {
+    page.drawRectangle({ x: MARGIN, y: y - 16, width: CONTENT_WIDTH, height: 16, color: COLOR_PRIMARY });
+
+    let currentX = MARGIN;
+    tableCols.forEach((col) => {
+      if (col.align === "right") {
+        drawTextRight(page, col.label, boldFont, 7.5, currentX + col.width - 6, y - 11, COLOR_WHITE);
+      } else {
+        page.drawText(col.label, { x: currentX + 6, y: y - 11, size: 7.5, font: boldFont, color: COLOR_WHITE });
+      }
+      currentX += col.width;
+    });
+
+    y -= 16;
+  };
+
+  const ensureSpaceOnPage = (needed: number) => {
+    if (y - needed < MARGIN + 25) {
+      page = doc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
+      y = PAGE_HEIGHT - MARGIN;
+      drawTableHeader();
+    }
+  };
+
+  drawTableHeader();
+
+  report.customers.forEach((customer, index) => {
+    ensureSpaceOnPage(15);
+
+    if (index % 2 === 0) {
+      page.drawRectangle({ x: MARGIN, y: y - 15, width: CONTENT_WIDTH, height: 15, color: COLOR_BG_LIGHT });
+    }
+
+    let currentX = MARGIN;
+
+    // Customer Name
+    page.drawText(customer.name, { x: currentX + 6, y: y - 11, size: 8, font, color: COLOR_TEXT_DARK });
+    currentX += tableCols[0]!.width;
+
+    // Work Total
+    drawTextRight(page, safeCurrency(customer.workTotal), boldFont, 8, currentX + tableCols[1]!.width - 6, y - 11, COLOR_TEXT_DARK);
+    currentX += tableCols[1]!.width;
+
+    // Paid Total
+    drawTextRight(page, safeCurrency(customer.paidTotal), boldFont, 8, currentX + tableCols[2]!.width - 6, y - 11, COLOR_GREEN);
+    currentX += tableCols[2]!.width;
+
+    // Pending
+    const pendingColor = customer.pending > 0 ? COLOR_RED : COLOR_GREEN;
+    drawTextRight(page, safeCurrency(customer.pending), boldFont, 8, currentX + tableCols[3]!.width - 6, y - 11, pendingColor);
+
+    y -= 15;
+  });
+
+  // Footer
+  const totalPages = doc.getPageCount();
+  for (let i = 0; i < totalPages; i++) {
+    const p = doc.getPage(i);
+    p.drawLine({ start: { x: MARGIN, y: MARGIN + 10 }, end: { x: PAGE_WIDTH - MARGIN, y: MARGIN + 10 }, thickness: 0.5, color: COLOR_BORDER });
+    p.drawText("Backup report generated by Krishi Tractor Management System", { x: MARGIN, y: MARGIN - 2, size: 7, font, color: COLOR_SECONDARY });
+    const pageStr = `Page ${i + 1} of ${totalPages}`;
+    drawTextRight(p, pageStr, font, 7, PAGE_WIDTH - MARGIN, MARGIN - 2, COLOR_SECONDARY);
   }
 
   return doc.save();
